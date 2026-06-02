@@ -38,6 +38,7 @@
     .btn-copy { 
       background: #4ecca3; color: #000; border: none; padding: 14px; border-radius: 12px; 
       font-weight: bold; cursor: pointer; width: 100%; margin-top: 45px; font-size: 14px; flex-shrink: 0;
+      transition: all 0.3s ease;
     }
     
     .check-row { display: flex; align-items: center; gap: 8px; font-size: 11px; cursor: pointer; padding: 2px 0; color: #bbb; }
@@ -48,7 +49,7 @@
     .fx-footer img { height: 32px; border-radius: 4px; }
   </style>
 
-  <div class="fx-header"><h2>✨ РЕДАКТОР СПЕЦЭФФЕКТОВ ✨</h2></div>
+  <div class="fx-header"><h2>✨ ИГРОВОЙ КВАРТАЛ ✨</h2></div>
 
   <div class="editor-grid">
     <div class="controls-panel">
@@ -207,11 +208,22 @@
       loop();
 
       window.generateAndCopy = function() {
-        if(layers.length === 0) return alert("Add some layers first!");
+        const btn = document.getElementById('copy-btn');
+        
+        if(layers.length === 0) {
+          const origText = btn.innerText;
+          btn.innerText = "⚠️ СНАЧАЛА ДОБАВЬТЕ ЭФФЕКТЫ!";
+          setTimeout(() => { btn.innerText = origText; }, 2000);
+          return;
+        }
+        
         const data = layers.map(p => p.c);
         const code = `<iframe style="width:100%;height:100%;border:none;background:transparent;" srcdoc='<body style="margin:0;overflow:hidden;background:transparent;"><meta charset="UTF-8"><canvas id="c"></canvas><script>const v=document.getElementById("c"),t=v.getContext("2d"),ps=${JSON.stringify(data)};function r(){v.width=window.innerWidth;v.height=window.innerHeight}window.onresize=r;r();ps.forEach(p=>{p.x=Math.random()*v.width;p.y=Math.random()*v.height;const s=p.speed;if(p.dir==="down"){p.vx=0;p.vy=s}else if(p.dir==="up"){p.vx=0;p.vy=-s}else if(p.dir==="right-down"){p.vx=s*0.6;p.vy=s}else{const a=Math.random()*6.28;p.vx=Math.cos(a)*s;p.vy=Math.sin(a)*s}});function a(){t.clearRect(0,0,v.width,v.height);ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<-150||p.x>v.width+150||p.y<-150||p.y>v.height+150){if(p.dir==="center"){p.x=v.width/2;p.y=v.height/2}else if(p.dir==="up"){p.x=Math.random()*v.width;p.y=v.height+50}else if(p.dir==="down"||p.dir==="right-down"){p.x=Math.random()*v.width;p.y=-50}else{p.x=Math.random()*v.width;p.y=Math.random()*v.height}}t.save();t.globalAlpha=p.opacity;if(p.glow){t.shadowBlur=p.size/2;t.shadowColor=p.color}t.fillStyle=p.color;if(p.isCircle){t.beginPath();t.arc(p.x,p.y,p.size/4,0,6.28);t.fill()}else{t.font=p.size+"px Arial";t.textAlign="center";t.textBaseline="middle";t.fillText(p.content,p.x,p.y)}t.restore()});requestAnimationFrame(a)}a();<\/script>'></iframe>`;
         const f = document.getElementById('hidden-copy-field'); f.value = code; f.select(); document.execCommand('copy');
-        alert("Success! Now paste this into Genially.");
+        
+        const origText = btn.innerText;
+        btn.innerText = "✅ СКОПИРОВАНО!";
+        setTimeout(() => { btn.innerText = origText; }, 2000);
       };
     })();
   </script>
